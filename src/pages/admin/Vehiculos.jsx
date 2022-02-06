@@ -1,77 +1,110 @@
 import React, {useEffect, useState} from 'react';
 
-//Realizar un formulario que le pida a un usuario su edad y le diga
-// si el usuario es mayor de edad o no.
-
 const Vehiculos = () => {
 
-  const [nombreVehiculo, setNombreVehiculo] = useState("");
-  const [edad, setEdad] = useState(0); 
-  const [esMenorDeEdad, setEsMenorDeEdad] = useState(false); 
-  const [mostrarCamposAdicionales, setMostrarCamposAdicionales] = useState(false);
+  const [mostrarTabla, setMostrarTabla] = useState(true);
+  const [vehiculos, setVehiculos] = useState([]);
+  const [textoBoton, setTextoBoton] = useState("Crear nuevo vehiculo");
+
+  const vehiculosBackend = [
+    {
+      nombre: "Corolla",
+      marca: "Toyota",
+      modelo: 2014
+    },
+    {
+      nombre: "Sandero",
+      marca: "Renault",
+      modelo: 2020
+    },
+    {
+      nombre: "Duster",
+      marca: "Renault",
+      modelo: 2018
+    },
+    {
+      nombre: "Mazda 3",
+      marca: "Mazda",
+      modelo: 2012
+    },
+    {
+      nombre: "Captiva",
+      marca: "Toyota",
+      modelo: 2021
+    },
+    {
+      nombre: "Onix",
+      marca: "Chevrolet",
+      modelo: 2021
+    }
+  ];
 
   useEffect(()=>{
-    if(edad>=18){
-      setEsMenorDeEdad(false);
-    }
-    else{
-      setEsMenorDeEdad(true);
-    }
-  }, [edad]);
-
-  useEffect(() => {
-    console.log('Hola, soy un effect que se ejecuta solo una vez cuando la pagina se renderiza, porque tiene el array de dependencias vacio');
-    //paso 2
-    //paso 3
-    //paso 4
+    //obtener lista de vehiculos desde el backend
+    setVehiculos(vehiculosBackend);
   }, []);
 
-  useEffect(() => {
-    console.log('Este useEffect se ejecuta cuando se le da el onClick');
-    console.log('El valor de la variable es: ', nombreVehiculo);
-  }, [nombreVehiculo]);
+  useEffect(()=>{
+    if(mostrarTabla){
+      setTextoBoton("Crear nuevo vehiculo");
+    }
+    else{
+      setTextoBoton("Mostrar todos los vehiculos");
+    }
+  }, [mostrarTabla]);
 
-  const enviarDatosAlBackend = () =>{
-    console.log("El valor de la variable nombreVehiculo es: ", nombreVehiculo);
-  }
 
   return (
-      <form className='flex flex-col'>
-          <h2>Formulario de creación de vehículos</h2>
-          <input onChange={(e) => {setNombreVehiculo(e.target.value)}} type="text" placeholder='Nombre del vehículo'/>
-          <input onChange={(e) => {console.log("marca: ", e.target.value)}} type="text" placeholder='Marca del vehículo'/>
-          <input type="text" placeholder='Modelo del vehículo'/>
-          <input type="text" />
-          <input type="text" />
-          <button type='button' onClick={enviarDatosAlBackend} className=' bg-indigo-500 text-white'>Enviar datos</button>
-          <label htmlFor="edad">
-            Por favor ingrese su edad
-            <input value={edad} onChange={(e)=>{setEdad(e.target.value)}} type="number" name='edad' className='border border-gray-600' />
-          </label>
-          {
-          esMenorDeEdad ? (
-          <span className=' text-3xl text-red-500'>
-          Usted es menor de edad no puede hacer pagos
-          </span> ) : (
-          <span className=' text-3xl text-green-500'>
-          Usted es mayor de edad si puede hacer pagos
-          </span> )
-          }
-          <button onClick={()=>setMostrarCamposAdicionales(!mostrarCamposAdicionales)} type="button" className=" bg-indigo-500 text-white">
-            Mostrar campos adicionales
-          </button>
-          {mostrarCamposAdicionales && (
-            <div>
-              <input className='border bg-gray-400 my-2 p-3' placeholder='dato nuevo' type="text" />
-              <input className='border bg-gray-400 my-2 p-3' placeholder='dato nuevo' type="text" />
-              <input className='border bg-gray-400 my-2 p-3' placeholder='dato nuevo' type="text" />
-              <input className='border bg-gray-400 my-2 p-3' placeholder='dato nuevo' type="text" />
-              <input className='border bg-gray-400 my-2 p-3' placeholder='dato nuevo' type="text" />
-              <input className='border bg-gray-400 my-2 p-3' placeholder='dato nuevo' type="text" />
-            </div>
-          )}
+    <div className='flex h-full w-full flex-col items-center justify-start p-8'>
+      <div className='flex flex-col'>
+        <h2 className=' text-3xl font-extrabold text-gray-900'>Página de administración de vehículos</h2>      
+        <button onClick={()=>{setMostrarTabla(!mostrarTabla)}} className='text-white bg-indigo-500 p-5 rounded-full m-6 w-40 self-end'>{textoBoton}</button>
+        {mostrarTabla ? <TablaVehiculos listaVehiculos={vehiculos}/> : <FormCreacionVehiculos/>}
+      </div>
+    </div>
+  );
+};
 
+const TablaVehiculos = ({listaVehiculos}) => {
+  return(
+    <div className=' flex flex-col items-center justify-center'>
+      <h2 className=' text-2xl font-extrabold text-gray-800'>Todos los vehículos</h2>
+      <div>
+        <thead>
+          <tr>
+            <th>Nombre del vehiculo</th>
+            <th>Marca del vehiculo</th>
+            <th>Modelo del vehiculo</th>
+          </tr>
+        </thead>
+        <tbody>
+          {listaVehiculos.map((vehiculo)=>{
+            return(
+              <tr>
+                <td>{vehiculo.nombre}</td>
+                <td>{vehiculo.marca}</td>
+                <td>{vehiculo.modelo}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </div>
+    </div>
+  );
+};
+
+const FormCreacionVehiculos = () => {
+  return(
+    <div className='flex flex-col items-center justify-center'>
+      <h2 className=' text-2xl font-extrabold text-gray-800'>Crear nuevo vehículo</h2>
+      <form className='grid grid-cols-2'>
+        <input className=' bg-gray-50 border border-gray-600 p-2 rounded-lg m-2' type="text" />
+        <input className=' bg-gray-50 border border-gray-600 p-2 rounded-lg m-2' type="text" />
+        <input className=' bg-gray-50 border border-gray-600 p-2 rounded-lg m-2' type="text" />
+        <input className=' bg-gray-50 border border-gray-600 p-2 rounded-lg m-2' type="text" />
+        <button className=' col-span-2 bg-green-400 p-2 rounded-full shadow-md hover:bg-green-700 text-white'>Guardar vehiculo</button>
       </form>
+    </div>
   );
 };
 
