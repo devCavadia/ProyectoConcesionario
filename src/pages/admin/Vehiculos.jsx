@@ -1,10 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
 const Vehiculos = () => {
-
   const [mostrarTabla, setMostrarTabla] = useState(true);
   const [vehiculos, setVehiculos] = useState([]);
   const [textoBoton, setTextoBoton] = useState("Crear nuevo vehiculo");
@@ -55,7 +54,7 @@ const Vehiculos = () => {
     }
     else{
       setTextoBoton("Mostrar todos los vehiculos");
-      setColorBoton("green");
+      setColorBoton("red");
     }
   }, [mostrarTabla]);
 
@@ -68,9 +67,9 @@ const Vehiculos = () => {
         {mostrarTabla ? (<TablaVehiculos listaVehiculos={vehiculos}/>
         ) : (
           <FormCreacionVehiculos 
-            funcionMostrarTabla={setMostrarTabla}
+            setMostrarTabla={setMostrarTabla}
             listaVehiculos={vehiculos}
-            funcionAgregarVehiculo={setVehiculos}
+            setVehiculos={setVehiculos}
            />
         )}
         <ToastContainer position="top-right" autoClose={5000} />
@@ -107,22 +106,30 @@ const TablaVehiculos = ({listaVehiculos}) => {
   );
 };
 
-const FormCreacionVehiculos = ({ funcionMostrarTabla, listaVehiculos, funcionAgregarVehiculo }) => {
-  const [nombre, setNombre]=useState();
-  const [marca, setMarca]=useState();
-  const [modelo, setModelo]=useState();
+const FormCreacionVehiculos = ({ setMostrarTabla, listaVehiculos, setVehiculos }) => {
+  const form = useRef(null);
 
-  const enviarAlBackend = () => {
-    console.log("nombre ", nombre, " marca ", marca, " modelo", modelo);
-    toast.success('Vehículo creado con éxito');
-    funcionMostrarTabla(true);
-    funcionAgregarVehiculo([...listaVehiculos, {nombre: nombre, marca: marca, modelo: modelo}]);
+  const submitForm = (e) =>{
+    e.preventDefault();
+    const fd = new FormData(form.current);
+
+    const nuevoVehiculo = {};
+    fd.forEach((value, key)=>{
+      nuevoVehiculo[key]=value;
+    });
+    
+    setMostrarTabla(true);
+    setVehiculos([...listaVehiculos, nuevoVehiculo]);
+    //Identificar el caso de éxito y mostrar un toast de éxito
+    toast.success("Vehículo agregado con éxito");
+    //Identificar el caso de error y mostrar un toast de error
+    //toast.success("Error creando un vehículo");
   };
 
   return(
     <div className='flex flex-col items-center justify-center'>
       <h2 className=' text-2xl font-extrabold text-gray-800'>Crear nuevo vehículo</h2>
-      <form className='flex flex-col'>
+      <form ref={form} onSubmit={submitForm} className='flex flex-col'>
         <label className='flex flex-col' htmlFor="nombre">
           Nombre del Vehiculo
           <input 
@@ -130,10 +137,7 @@ const FormCreacionVehiculos = ({ funcionMostrarTabla, listaVehiculos, funcionAgr
             className=' bg-gray-50 border border-gray-600 p-2 rounded-lg m-2' 
             type="text"
             placeholder='Corolla' 
-            value={nombre}
-            onChange={(e)=>{
-              setNombre(e.target.value);
-            }}
+            required
           />
         </label>
         <label className='flex flex-col' htmlFor="marca">
@@ -141,11 +145,10 @@ const FormCreacionVehiculos = ({ funcionMostrarTabla, listaVehiculos, funcionAgr
           <select 
             name='marca' 
             className=' bg-gray-50 border border-gray-600 p-2 rounded-lg m-2'
-            value={marca}
-            onChange={(e)=>{
-              setMarca(e.target.value);
-            }}>
-            <option disabled>Seleccione una opción</option>
+            required
+            defaultValue={0}
+          >
+            <option disabled value={0}>Seleccione una opción</option>
             <option>Renault</option>
             <option>Toyota</option>
             <option>Ford</option>
@@ -162,18 +165,13 @@ const FormCreacionVehiculos = ({ funcionMostrarTabla, listaVehiculos, funcionAgr
             min={1992}
             max={2022}
             placeholder='2014' 
-            value={modelo}
-            onChange={(e)=>{
-              setModelo(e.target.value);
-            }}
+            required
           />
         </label>
         <button 
-          type='button'
+          type='submit'
           className=' col-span-2 bg-green-400 p-2 rounded-full shadow-md hover:bg-green-700 text-white'
-          onClick={()=>{
-            enviarAlBackend()
-            }}>Guardar vehiculo</button>
+        >Guardar vehiculo</button>
       </form>
     </div>
   );

@@ -9,20 +9,30 @@ import Login from "pages/Login";
 import Registro from "pages/Registro";
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import 'styles/styles.css';
+import {DarkModeContext} from "context/darkMode";
+import { useEffect, useState } from "react";
 
 function App() {
+  const [darkMode, setDarkMode] = useState(false);
+  
+  useEffect(() => {
+    console.log("modo dark: ", darkMode);
+  }, [darkMode]);
+
   return (
-    <div>
-      <Router>
-        <Routes>
-          <Route path="/admin" element={<PrivateLayout><Index1/></PrivateLayout>}/>
-          <Route path="/admin/vehiculos" element={<PrivateLayout><Vehiculos/></PrivateLayout>}/>
-          <Route path="/admin/clientes" element={<PrivateLayout><Clientes/></PrivateLayout>}/>
-          <Route path="/login" element={<AuthLayout><Login/></AuthLayout>}/>
-          <Route path="/registro" element={<AuthLayout><Registro/></AuthLayout>}/>
-          <Route path="/" element={<PublicLayout><Index/></PublicLayout>}/>
-        </Routes>
-      </Router>
+    <div className="App">
+      <DarkModeContext.Provider value={{darkMode, setDarkMode}}>
+        <Router>
+          <Routes>
+            <Route path="/admin" element={<PrivateLayout><Index1/></PrivateLayout>}/>
+            <Route path="/admin/vehiculos" element={<PrivateLayout><Vehiculos/></PrivateLayout>}/>
+            <Route path="/admin/clientes" element={<PrivateLayout><Clientes/></PrivateLayout>}/>
+            <Route path="/login" element={<AuthLayout><Login/></AuthLayout>}/>
+            <Route path="/registro" element={<AuthLayout><Registro/></AuthLayout>}/>
+            <Route path="/" element={<PublicLayout><Index/></PublicLayout>}/>
+          </Routes>
+        </Router>
+      </DarkModeContext.Provider>
     </div>
   );
 }
