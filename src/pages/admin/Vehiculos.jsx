@@ -7,7 +7,7 @@ const Vehiculos = () => {
   const [mostrarTabla, setMostrarTabla] = useState(true);
   const [vehiculos, setVehiculos] = useState([]);
   const [textoBoton, setTextoBoton] = useState("Crear nuevo vehiculo");
-  const [colorBoton, setColorBoton] = useState("indigo");
+  const [colorBoton, setColorBoton] = useState('bg-indigo-500');
 
   
   useEffect(()=>{
@@ -50,11 +50,11 @@ const Vehiculos = () => {
   useEffect(()=>{
     if(mostrarTabla){
       setTextoBoton("Crear nuevo vehiculo");
-      setColorBoton("indigo");
+      setColorBoton('bg-indigo-500');
     }
     else{
       setTextoBoton("Mostrar todos los vehiculos");
-      setColorBoton("red");
+      setColorBoton('bg-green-500');
     }
   }, [mostrarTabla]);
 
@@ -63,7 +63,7 @@ const Vehiculos = () => {
     <div className='flex h-full w-full flex-col items-center justify-start p-8'>
       <div className='flex flex-col'>
         <h2 className=' text-3xl font-extrabold text-gray-900'>Página de administración de vehículos</h2>      
-        <button onClick={()=>{setMostrarTabla(!mostrarTabla)}} className={`text-white bg-${colorBoton}-500 p-5 rounded-full m-6 w-40 self-end`}>{textoBoton}</button>
+        <button onClick={()=>{setMostrarTabla(!mostrarTabla)}} className={`text-white ${colorBoton} p-5 rounded-full m-6 w-40 self-end`}>{textoBoton}</button>
         {mostrarTabla ? (<TablaVehiculos listaVehiculos={vehiculos}/>
         ) : (
           <FormCreacionVehiculos 
