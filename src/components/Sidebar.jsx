@@ -6,18 +6,18 @@ import { faCar, faCashRegister, faUser, faUsers } from '@fortawesome/free-solid-
 
 const Sidebar = () => {
   return (
-      <nav className=' w-72 border border-gray-300 flex flex-col bg-gray-200 p-4'>
-        <Link to="/admin">
-          <ImagenLogo />
-        </Link>
-        <div className='my-4'>
-          <Ruta icono={faUser} ruta="/admin/perfil" nombre="Perfil" />
-          <Ruta icono={faCar} ruta="/admin/vehiculos" nombre="Vehículos" />
-          <Ruta icono={faCashRegister} ruta="/admin/ventas" nombre="Ventas" />
-          <Ruta icono={faUsers} ruta="/admin/usuarios" nombre="Usuarios" />
-        </div>
-        <button>Cerrar sesión</button>
-      </nav>
+    <nav className=' hidden sm:flex sm:w-72 border border-gray-300 flex flex-col bg-gray-200 p-4'>
+      <Link to="/admin">
+        <ImagenLogo />
+      </Link>
+      <div className='my-4'>
+        <Ruta icono={faUser} ruta="/admin/perfil" nombre="Perfil" />
+        <Ruta icono={faCar} ruta="/admin/vehiculos" nombre="Vehículos" />
+        <Ruta icono={faCashRegister} ruta="/admin/ventas" nombre="Ventas" />
+        <Ruta icono={faUsers} ruta="/admin/usuarios" nombre="Usuarios" />
+      </div>
+      <button>Cerrar sesión</button>
+    </nav>
   );
 };
 
